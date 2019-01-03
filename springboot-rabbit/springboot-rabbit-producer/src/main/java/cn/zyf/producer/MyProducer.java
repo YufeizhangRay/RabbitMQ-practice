@@ -1,6 +1,5 @@
 package cn.zyf.producer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,7 @@ public class MyProducer {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
-    public void send() throws JsonProcessingException {
+    public void send(){
         rabbitTemplate.convertAndSend(directExchange,directRoutingKey,"a direct msg");
 
         rabbitTemplate.convertAndSend(topicExchange,topicRoutingKey1,"a topic msg : hangzhou.zyf.teacher");

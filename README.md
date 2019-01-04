@@ -38,7 +38,7 @@ RabbitMQ 提供了一个易用的用户界面，使得用户可以监控和管�
 RabbitMQ提供了许多插件，以实现从多方面扩展，当然也可以编写自己的插件。  
   
 #### 工作模型  
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%9E%8B.jpeg)  
    
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E6%A6%82%E5%BF%B5.jpeg)  
   
@@ -51,7 +51,7 @@ Direct Exchange 直连交换机
  // 只有队列1能收到消息
 channel.basicPublish("MY_DIRECT_EXCHANGE", "key1", null, msg.getBytes());
 ```
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/direct.jpeg)  
   
 Topic Exchange 主题交换机  
 定义:主题类型的交换机与一个队列绑定时，可以指定按模式匹配的routing key。  
@@ -66,7 +66,7 @@ channel.basicPublish("MY_TOPIC_EXCHANGE", "bj.book", null, msg.getBytes());
 channel.basicPublish("MY_TOPIC_EXCHANGE", "abc.def.food", null, msg.getBytes());
  ```
  
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/topic.jpeg)  
   
 Fanout Exchange 广播交换机  
 定义:广播类型的交换机与一个队列绑定时，不需要指定binding key。  
@@ -76,7 +76,7 @@ Fanout Exchange 广播交换机
 channel.basicPublish("MY_FANOUT_EXCHANGE", "", null, msg.getBytes());
 ```
  
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/fanout.jpeg)  
   
 ### Java API 编程  
   
@@ -211,7 +211,7 @@ channel.queueDeclare("TEST_TTL_QUEUE", false, false, false, argss);
 2.消息过期  
 3.队列达到最大长度(先入队的消息会被发送到DLX)  
   
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/DLX.jpeg)  
   
 可以设置一个死信队列(Dead Letter Queue)与DLX绑定，即可以存储Dead Letter，消费者可以监听这个队列取走消息。  
 ```
@@ -305,7 +305,7 @@ rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 5.编写生产者  
 6.编写4个消费者  
 7.编写单元测试类  
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B.jpeg)  
   
 ### Spring Boot集成RabbitMQ  
   
@@ -316,7 +316,7 @@ rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 可靠性投递  
 首先需要明确，效率与可靠性是无法兼得的，如果要保证每一个环节都成功，势必会对消息的收发效率造成影响。  
 如果是一些业务实时一致性要求不是特别高的场合，可以牺牲一些可靠性来换取效率。  
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93.jpeg)  
   
 >1.代表消息从生产者发送到Exchange;   
 2.代表消息从Exchange路由到Queue;   
@@ -389,7 +389,7 @@ channel.basicPublish("", QUEUE_NAME, properties, msg.getBytes());
 
 ### 高可用架构  
   
-![]()  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84.jpeg)  
   
 RabbitMQ集群  
 

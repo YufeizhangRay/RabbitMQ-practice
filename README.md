@@ -409,9 +409,7 @@ channel.basicPublish("", QUEUE_NAME, properties, msg.getBytes());
 在RabbitMQ中，一个队列有多个消费者时，由于不同的消费者消费消息的速度是不一样的，顺序无法保证。  
 
 ### 高可用架构  
-  
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84.jpeg)  
-  
+    
 RabbitMQ集群  
 
 集群主要用于实现高可用与负载均衡。  
@@ -433,6 +431,7 @@ RabbitMQ镜像队列
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E9%98%9F%E5%88%97%E9%95%9C%E5%83%8F.jpeg)  
   
 HAproxy负载+Keepalived高可用  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84.jpeg)  
   
 在两个内存节点上安装HAProxy  
 ```

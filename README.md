@@ -225,6 +225,7 @@ argss.put("x-message-ttl",6000);
 channel.queueDeclare("TEST_TTL_QUEUE", false, false, false, argss);
 ```
 队列的过期时间决定了在没有任何消费者以后，队列可以存活多久。  
+若同时设置了消息的过期时间与队列的过期时间，则消息的寿命以较短的那个为主。  
   
 #### 死信队列  
 有三种情况消息会进入DLX(Dead Letter Exchange)死信交换机。  
@@ -347,9 +348,11 @@ rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 确保消息发送到RabbitMQ服务器  
 可能因为网络或者Broker的问题导致1失败，而生产者是无法知道消息是否正确发送到Broker的。  
 有两种解决方案，第一种是Transaction(事务)模式，第二种Confirm(确认)模式。  
-在通过channel.txSelect方法开启事务之后，我们便可以发布消息给RabbitMQ了，如果事务提交成功，则消息一定到达了RabbitMQ中，如果在事务提交执行之前由于RabbitMQ异常崩溃或者其他原因抛出异常，这个时候我们便可以将其捕获，进而通过执行channel.txRollback方法来实现事务回滚。使用事务机制的话会“吸干”RabbitMQ的性能，一般不建议使用。  
+在通过channel.txSelect方法开启事务之后，我们便可以发布消息给RabbitMQ了，如果事务提交成功，则消息一定到达了RabbitMQ中，如果在事务提交执行之前由于RabbitMQ异常崩溃或者其他原因抛出异常，这个时候我们便可以将其捕获，进而通过执行channel.txRollback方法来实现事务回滚。事务模式下消息在成功commit之保持阻塞，会大大降低RabbitMQ的性能，一般不建议使用。  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/Tx.jpeg)  
   
-生产者通过调用channel.confirmSelect方法(即Confirm.Select命令)将信道设置为confirm模式。一旦消息被投递到所有匹配的队列之后，RabbitMQ就会发送一个确认(Basic.Ack)给生产者(包含消息的唯一ID)，这就使得生产者知晓消息已经正确到达了目的地了。  
+生产者通过调用channel.confirmSelect方法(即Confirm.Select命令)将信道设置为confirm模式。一旦消息被投递到所有匹配的队列之后，RabbitMQ就会发送一个确认(Basic.Ack)给生产者(包含消息的唯一ID)，这就使得生产者知晓消息已经正确到达了目的地了。而且此模式还支持批量的应答，可以在一次ACK中对前面的多条消息进行应答，效率较高。  
+![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/confirm.jpeg)  
   
 确保消息路由到正确的队列  
 可能因为路由关键字错误，或者队列不存在，或者队列名称错误导致2失败。  
@@ -385,7 +388,7 @@ channel.basicPublish("", QUEUE_NAME, properties, msg.getBytes());
   
 确保消息从队列正确地投递到消费者  
 如果消费者收到消息后未来得及处理即发生异常，或者处理过程中发生异常，会导致4失败。  
-为了保证消息从队列可靠地达到消费者，RabbitMQ提供了消息确认机制(message acknowledgement)。消费者在订阅队列时，可以指定autoAck参数，当autoAck等于false时，RabbitMQ会等待消费者显式地回复确认信号后才从队列中移去消息。  
+为了保证消息从队列可靠地达到消费者，RabbitMQ提供了消息确认机制(message acknowledgement)。消费者在订阅队列时，可以指定autoAck参数，当autoAck等于true时，消息在发送给消费者时候会立即被删除。而当autoAck等于false时，RabbitMQ会等待消费者显式地回复确认信号后才从队列中移去消息。  
   
 如果消息消费失败，也可以调用Basic.Reject或者Basic.Nack来拒绝当前消息而不是确认。如果requeue参数设置为 true，可以把这条消息重新存入队列，以便发给下一个消费者(当然，只有一个消费者的时候，这种方式可能会出现无限循环重复消费的情况，可以投递到新的队列中，或者只打印异常日志)。  
 

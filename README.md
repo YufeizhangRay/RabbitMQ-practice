@@ -3,7 +3,7 @@
 ## RabbitMQ学习实践 原理分析  
   
 - [什么是RabbitMQ](#什么是rabbitmq)  
-- [RabbitMQ的典型应用场景](#rabbitmq典型应用场景)  
+- [RabbitMQ的典型应用场景](#rabbitmq的典型应用场景)  
 - [AMQP协议](#amqp协议)  
 - [RabbitMQ的特性](#rabbitmq的特性)   
   - [工作模型](#工作模型)  
@@ -27,7 +27,7 @@
   
 RabbitMQ是一个由erlang语言编写的AMQP（Advanced Message Queue Protocol）的开源实现，由RabbitMQ Technologies Ltd开发并且提供商业支持。    
   
-### 典型应用场景  
+### RabbitMQ的典型应用场景  
   
 >1.跨系统的异步通信  
 2.应用内的同步变成异步  

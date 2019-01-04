@@ -16,7 +16,6 @@ RabbitMQ是一个由erlang语言编写的AMQP（Advanced Message Queue Protocol�
 ### AMQP协议  
   
 AMQP 即 Advanced Message Queuing Protocol，一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受不同客户端/中间件同产品、不同的开发语言等条件的限制。  
-AMQP的实现有:RabbitMQ、OpenAMQ、Apache Qpid、Redhat Enterprise MRG、AMQP Infrastructure等。  
 
 ### RabbitMQ的特性  
   
@@ -34,16 +33,17 @@ RabbitMQ 支持多种消息队列协议，比如 AMQP、STOMP、MQTT 等等。
 (6)多语言客户端(Many Clients)   
 RabbitMQ 几乎支持所有常用语言，比如 Java、.NET、Ruby、PHP、C#、 JavaScript 等等。  
 (7)管理界面(Management UI)  
-RabbitMQ 提供了一个易用的用户界面，使得用户可以监控和管理消息、集群中的节点。
+RabbitMQ 提供了一个易用的用户界面，使得用户可以监控和管理消息、集群中的节点。  
 (8)插件机制(Plugin System)   
 RabbitMQ提供了许多插件，以实现从多方面扩展，当然也可以编写自己的插件。  
   
 #### 工作模型  
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E6%A8%A1%E5%9E%8B.jpeg)  
+![]()  
    
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E6%A6%82%E5%BF%B5.jpeg)  
   
 三种主要的交换机  
+  
 Direct Exchange 直连交换机  
 定义:直连类型的交换机与一个队列绑定时，需要指定一个明确的binding key。  
 路由规则:发送消息到直连类型的交换机时，只有routing key跟binding key完全匹配时，绑定的队列才能收到消息。 例如:  
@@ -51,7 +51,7 @@ Direct Exchange 直连交换机
  // 只有队列1能收到消息
 channel.basicPublish("MY_DIRECT_EXCHANGE", "key1", null, msg.getBytes());
 ```
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/direct.jpeg)  
+![]()  
   
 Topic Exchange 主题交换机  
 定义:主题类型的交换机与一个队列绑定时，可以指定按模式匹配的routing key。  
@@ -66,7 +66,7 @@ channel.basicPublish("MY_TOPIC_EXCHANGE", "bj.book", null, msg.getBytes());
 channel.basicPublish("MY_TOPIC_EXCHANGE", "abc.def.food", null, msg.getBytes());
  ```
  
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/topic.jpeg)  
+![]()  
   
 Fanout Exchange 广播交换机  
 定义:广播类型的交换机与一个队列绑定时，不需要指定binding key。  
@@ -76,7 +76,7 @@ Fanout Exchange 广播交换机
 channel.basicPublish("MY_FANOUT_EXCHANGE", "", null, msg.getBytes());
 ```
  
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/fanout.jpeg)  
+![]()  
   
 ### Java API 编程  
   
@@ -95,21 +95,29 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 public class MyProducer {
     private final static String QUEUE_NAME = "ORIGIN_QUEUE";
-public static void main(String[] args) throws Exception { ConnectionFactory factory = new ConnectionFactory(); // 连接IP
-factory.setHost("127.0.0.1");
-// 连接端口 factory.setPort(5672);
-// 虚拟机 factory.setVirtualHost("/"); // 用户 factory.setUsername("guest"); factory.setPassword("guest");
-// 建立连接
-Connection conn = factory.newConnection(); // 创建消息通道
-Channel channel = conn.createChannel();
-String msg = "Hello world, Rabbit MQ";
-// 声明队列
-// String queue, boolean durable, boolean exclusive, boolean autoDelete,
-Map<String, Object> arguments
+    public static void main(String[] args) throws Exception { 
+        ConnectionFactory factory = new ConnectionFactory(); 
+        // 连接IP
+        factory.setHost("127.0.0.1");
+        // 连接端口 
+        factory.setPort(5672);
+        // 虚拟机 
+        factory.setVirtualHost("/"); 
+        // 用户 f
+        actory.setUsername("guest"); 
+        factory.setPassword("guest");
+        // 建立连接
+        Connection conn = factory.newConnection(); 
+        // 创建消息通道
+        Channel channel = conn.createChannel();
+        String msg = "Hello world, Rabbit MQ";
+        // 声明队列
+        // String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments
         channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-// 发送消息(发送到默认交换机AMQP Default，Direct)
-// 如果有一个队列名称跟Routing Key相等，那么消息会路由到这个队列
-// String exchange, String routingKey, BasicProperties props, byte[] body channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
+        // 发送消息(发送到默认交换机AMQP Default，Direct)
+        // 如果有一个队列名称跟Routing Key相等，那么消息会路由到这个队列
+        // String exchange, String routingKey, BasicProperties props, byte[] body 
+        channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
         channel.close();
         conn.close();
     }
@@ -121,30 +129,38 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 public class MyConsumer {
     private final static String QUEUE_NAME = "ORIGIN_QUEUE";
-public static void main(String[] args) throws Exception { ConnectionFactory factory = new ConnectionFactory(); // 连接IP
-factory.setHost("127.0.0.1");
-// 默认监听端口 factory.setPort(5672);
-// 虚拟机 factory.setVirtualHost("/"); // 设置访问的用户 factory.setUsername("guest"); factory.setPassword("guest");
-// 建立连接
-Connection conn = factory.newConnection(); // 创建消息通道
-Channel channel = conn.createChannel();
-// 声明队列
-        // String queue, boolean durable, boolean exclusive, boolean autoDelete,
-Map<String, Object> arguments
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        System.out.println(" Waiting for message....");
-// 创建消费者
-Consumer consumer = new DefaultConsumer(channel) {
-@Override
-            public void handleDelivery(String consumerTag, Envelope envelope,
-AMQP.BasicProperties properties, byte[] body) throws IOException {
+    public static void main(String[] args) throws Exception { 
+    ConnectionFactory factory = new ConnectionFactory(); 
+    // 连接IP
+    factory.setHost("127.0.0.1");
+    // 默认监听端口 
+    factory.setPort(5672);
+    // 虚拟机 
+    factory.setVirtualHost("/"); 
+    // 设置访问的用户 
+    factory.setUsername("guest"); 
+    factory.setPassword("guest");
+    // 建立连接
+    Connection conn = factory.newConnection(); 
+    // 创建消息通道
+    Channel channel = conn.createChannel();
+    // 声明队列
+    // String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments
+    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    System.out.println(" Waiting for message....");
+    // 创建消费者
+    Consumer consumer = new DefaultConsumer(channel) {
+        @Override
+        public void handleDelivery(String consumerTag, Envelope envelope,
+            AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String msg = new String(body, "UTF-8");
                 System.out.println("Received message : '" + msg + "'");
             }
-};
-// 开始获取消息
-// String queue, boolean autoAck, Consumer callback channel.basicConsume(QUEUE_NAME, true, consumer);
-} }
+    };
+    // 开始获取消息
+    // String queue, boolean autoAck, Consumer callback channel.basicConsume(QUEUE_NAME, true, consumer);
+  } 
+}
 ```
 参数说明  
 声明交换机的参数  
@@ -154,7 +170,7 @@ boolean durable:是否持久化，代表交换机在服务器重启后是否还�
 声明队列的参数  
 >boolean durable:是否持久化，代表队列在服务器重启后是否还存在。  
 boolean exclusive:是否排他性队列。排他性队列只能在声明它的Connection中使用，连接断开时自动删除。  
-boolean autoDelete:是否自动删除。如果为true，至少有一个消费者连接到这个队列，之后所有与这个队列连接的消费者都断开时，队列会自动删除。
+boolean autoDelete:是否自动删除。如果为true，至少有一个消费者连接到这个队列，之后所有与这个队列连接的消费者都断开时，队列会自动删除。  
 Map<String, Object> arguments:队列的其他属性，例如x-message-ttl、x-expires、x-max-length、x-max- length-bytes、x-dead-letter-exchange、x-dead-letter-routing-key、x-max-priority。  
   
 消息属性BasicProperties  
@@ -162,8 +178,9 @@ Map<String, Object> arguments:队列的其他属性，例如x-message-ttl、x-ex
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E5%B1%9E%E6%80%A7%E5%8F%82%E6%95%B0.jpeg)  
 
 ### RabbitMQ进阶  
-1.TTL(Time To Live)  
-a)消息的过期时间  
+  
+#### TTL(Time To Live)  
+消息的过期时间  
 有两种设置方式:   
 通过队列属性设置消息过期时间:  
 ```
@@ -173,13 +190,14 @@ channel.queueDeclare("TEST_TTL_QUEUE", false, false, false, argss);
 ```
 设置单条消息的过期时间:  
 ```
-  AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder() .deliveryMode(2) // 持久化消息
+AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder() 
+        .deliveryMode(2) // 持久化消息
         .contentEncoding("UTF-8")
         .expiration("10000") // TTL
         .build();
 channel.basicPublish("", "TEST_TTL_QUEUE", properties, msg.getBytes());
 ```
-b)队列的过期时间  
+队列的过期时间  
 ```
 Map<String, Object> argss = new HashMap<String, Object>();
 argss.put("x-message-ttl",6000);
@@ -187,27 +205,29 @@ channel.queueDeclare("TEST_TTL_QUEUE", false, false, false, argss);
 ```
 队列的过期时间决定了在没有任何消费者以后，队列可以存活多久。  
   
-2.死信队列  
+#### 死信队列  
 有三种情况消息会进入DLX(Dead Letter Exchange)死信交换机。  
 >1.(NACK || Reject ) && requeue == false  
 2.消息过期  
 3.队列达到最大长度(先入队的消息会被发送到DLX)  
   
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/DLX.jpeg)  
+![]()  
   
 可以设置一个死信队列(Dead Letter Queue)与DLX绑定，即可以存储Dead Letter，消费者可以监听这个队列取走消息。  
 ```
-  Map<String,Object> arguments = new HashMap<String,Object>(); arguments.put("x-dead-letter-exchange","DLX_EXCHANGE");
+Map<String,Object> arguments = new HashMap<String,Object>(); 
+arguments.put("x-dead-letter-exchange","DLX_EXCHANGE");
 // 指定了这个队列的死信交换机
 channel.queueDeclare("TEST_DLX_QUEUE", false, false, false, arguments);
 // 声明死信交换机
-channel.exchangeDeclare("DLX_EXCHANGE","topic", false, false, false, null); // 声明死信队列
+channel.exchangeDeclare("DLX_EXCHANGE","topic", false, false, false, null);
+// 声明死信队列
 channel.queueDeclare("DLX_QUEUE", false, false, false, null);
 // 绑定
 channel.queueBind("DLX_QUEUE","DLX_EXCHANGE","#");
 ```
   
-3.优先级队列  
+#### 优先级队列  
 设置一个队列的最大优先级:  
 ```
 Map<String, Object> argss = new HashMap<String, Object>(); 
@@ -217,30 +237,30 @@ channel.queueDeclare("ORIGIN_QUEUE", false, false, false, argss);
 发送消息时指定消息当前的优先级:  
 ```
 AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder() 
-         .priority(5) // 消息优先级
+        .priority(5) // 消息优先级
         .build();
 channel.basicPublish("", "ORIGIN_QUEUE", properties, msg.getBytes());
 ```
 优先级高的消息可以优先被消费，但是只有消息堆积(消息的发送速度大于消费者的消费速度)的情况下优先级才有意义。  
   
-4.延迟队列  
+#### 延迟队列  
 RabbitMQ本身不支持延迟队列。可以使用TTL结合DLX的方式来实现消息的延迟投递，即把DLX跟某个队列绑定，到了指定时间，消息过期后，就会从DLX路由到这个队列，消费者可以从这个队列取走消息。  
 另一种方式是使用rabbitmq-delayed-message-exchange插件。  
 当然，将需要发送的信息保存在数据库，使用任务调度系统扫描然后发送也是可以实现的。  
   
-5.RPC  
+#### RPC  
 RabbitMQ实现RPC的原理:服务端处理消息后，把响应消息发送到一个响应队列，客户端再从响应队列取到结果。  
-其中的问题:Client收到消息后，怎么知道应答消息是回复哪一条消息的?所以必须有一个唯一ID来关联，就是 correlationId。  
+其中的问题：Client收到消息后，怎么知道应答消息是回复哪一条消息的？所以必须有一个唯一ID来关联，就是 correlationId。  
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/RPC.jpeg)  
   
-6.服务端流控(Flow Control)  
+#### 服务端流控(Flow Control)  
 RabbitMQ 会在启动时检测机器的物理内存数值。默认当 MQ 占用 40% 以上内存时，MQ 会主动抛出一个内存警告并阻塞所有连接(Connections)。可以通过修改 rabbitmq.config 文件来调整内存阈值，默认值是 0.4，如下所示: 
 ```
 [{rabbit, [{vm_memory_high_watermark, 0.4}]}]
 ```
 默认情况，如果剩余磁盘空间在 1GB 以下，RabbitMQ 主动阻塞所有的生产者。这个阈值也是可调的。注意队列长度只在消息堆积的情况下有意义，而且会删除先入队的消息，不能实现服务端限流。  
   
-7.消费端限流  
+#### 消费端限流  
 在AutoACK为false的情况下，如果一定数目的消息(通过基于consumer或者channel设置Qos的值)未被确认前，不进行消费新的消息。
 ```
 channel.basicQos(2); // 如果超过2条消息没有发送ACK，当前消费者不再接受队列消息 
@@ -285,7 +305,7 @@ rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 5.编写生产者  
 6.编写4个消费者  
 7.编写单元测试类  
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E9%85%8D%E7%BD%AE%E6%A8%A1%E5%9E%8B.jpeg)  
+![]()  
   
 ### Spring Boot集成RabbitMQ  
   
@@ -296,7 +316,7 @@ rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 可靠性投递  
 首先需要明确，效率与可靠性是无法兼得的，如果要保证每一个环节都成功，势必会对消息的收发效率造成影响。  
 如果是一些业务实时一致性要求不是特别高的场合，可以牺牲一些可靠性来换取效率。  
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93.jpeg)  
+![]()  
   
 >1.代表消息从生产者发送到Exchange;   
 2.代表消息从Exchange路由到Queue;   
@@ -340,7 +360,7 @@ AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
 .build();
 channel.basicPublish("", QUEUE_NAME, properties, msg.getBytes());
 ```
-4、集群，镜像队列
+4、集群，镜像队列(单独叙述)
   
 确保消息从队列正确地投递到消费者  
 如果消费者收到消息后未来得及处理即发生异常，或者处理过程中发生异常，会导致4失败。  
@@ -356,7 +376,7 @@ channel.basicPublish("", QUEUE_NAME, properties, msg.getBytes());
   
 消息幂等性  
 服务端是没有这种控制的，只能在消费端控制。  
-如何避免消息的重复消费?  
+如何避免消息的重复消费？  
 消息重复可能会有两个原因:   
 >1.生产者的问题，环节1重复发送消息，比如在开启了Confirm模式但未收到确认。   
 >2.环节4出了问题，由于消费者未发送ACK或者其他原因，消息重复投递。 
@@ -369,7 +389,7 @@ channel.basicPublish("", QUEUE_NAME, properties, msg.getBytes());
 
 ### 高可用架构  
   
-![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/高可用架构.jpeg)  
+![]()  
   
 RabbitMQ集群  
 
@@ -403,8 +423,16 @@ vim /etc/haproxy/haproxy.cfg
 ```
 内容修改为:
 ```
-  global log
-chroot
+global 
+    log                     127.0.0.1 local2
+    chroot                  /var/lib/haproxy
+    pidfile                 /var/run/haproxy.pid
+    maxconn                 4000
+    user                    haproxy
+    group                   haproxy
+    daemon
+    stats socket /var/lib/haproxy/stats
+    
 defaults
     log                     global
     option                  dontlognull
@@ -414,30 +442,28 @@ defaults
     timeout client          1m
     timeout server          1m
     maxconn                 3000
-    127.0.0.1 local2 /var/lib/haproxy /var/run/haproxy.pid 4000
-pidfile
-maxconn
-user
-group
-daemon
-stats socket /var/lib/haproxy/stats
-haproxy
-haproxy
+       
 listen http_front
         mode http
-bind 0.0.0.0:1080
-stats refresh 30s
-stats uri /haproxy?stats stats realm Haproxy Manager stats auth admin:123456
-listen rabbitmq_admin
-bind 0.0.0.0:15673
-server node1 192.168.8.40:15672 server node2 192.168.8.45:15672
-#监听端口 #统计页面自动刷新时间 #统计页面url #统计页面密码框上提示文本 #统计页面用户名和密码设置
-listen rabbitmq_cluster 0.0.0.0:5673 mode tcp
-balance roundrobin
-timeout client 3h
-timeout server 3h
-timeout connect 3h
-server node1 192.168.8.40:5672 check inter 5s rise 2 fall 3 server node2 192.168.8.45:5672 check inter 5s rise 2 fall 3
+        bind 0.0.0.0:1080             #监听端口 
+        stats refresh 30s             #统计页面自动刷新时间
+        stats uri /haproxy?stats      #统计页面url
+        stats realm Haproxy Manager   #统计页面密码框上提示文本
+        stats auth admin:123456       #统计页面用户名和密码设置
+        
+listen rabbitmq_admin 
+    bind 0.0.0.0:15673
+    server node1 192.168.8.40:15672 
+    server node2 192.168.8.45:15672
+    
+listen rabbitmq_cluster 0.0.0.0:5673 
+    mode tcp
+    balance roundrobin
+    timeout client 3h
+    timeout server 3h
+    timeout connect 3h
+    server node1 192.168.8.40:5672 check inter 5s rise 2 fall 3 
+    server node2 192.168.8.45:5672 check inter 5s rise 2 fall 3
 ```
 启动HAProxy  
 ```
@@ -453,48 +479,61 @@ vim /etc/keepalived/keepalived.conf
 ```
 内容改成(物理网卡和当前主机IP要修改):  
 ```
-   global_defs {
-   notification_email {
-acassen@firewall.loc failover@firewall.loc sysadmin@firewall.loc
-}
-notification_email_from Alexandre.Cassen@firewall.loc smtp_server 192.168.200.1
-smtp_connect_timeout 30
-router_id LVS_DEVEL
-vrrp_skip_check_adv_addr
-# vrrp_strict # 注释掉，不然访问不到VIP vrrp_garp_interval 0
-vrrp_gna_interval 0
+global_defs {
+    notification_email {
+      acassen@firewall.loc 
+      failover@firewall.loc 
+      sysadmin@firewall.loc
+    }
+    notification_email_from Alexandre.Cassen@firewall.loc 
+    smtp_server 192.168.200.1
+    smtp_connect_timeout 30
+    router_id LVS_DEVEL
+    vrrp_skip_check_adv_addr
+    # vrrp_strict # 注释掉，不然访问不到VIP vrrp_garp_interval 0
+    vrrp_gna_interval 0
 }
 global_defs {
-notification_email { acassen@firewall.loc failover@firewall.loc sysadmin@firewall.loc
-}
-notification_email_from Alexandre.Cassen@firewall.loc smtp_server 192.168.200.1
-smtp_connect_timeout 30
-router_id LVS_DEVEL
-vrrp_skip_check_adv_addr
-# vrrp_strict # 注释掉，不然访问不到VIP vrrp_garp_interval 0
-vrrp_gna_interval 0
+    notification_email { 
+      acassen@firewall.loc 
+      failover@firewall.loc 
+      sysadmin@firewall.loc
+    }
+    notification_email_from Alexandre.Cassen@firewall.loc 
+    smtp_server 192.168.200.1
+    smtp_connect_timeout 30
+    router_id LVS_DEVEL
+    vrrp_skip_check_adv_addr
+    # vrrp_strict # 注释掉，不然访问不到VIP 
+    vrrp_garp_interval 0
+    vrrp_gna_interval 0
 }
 # 检测任务
 vrrp_script check_haproxy {
-# 检测HAProxy监本
-script "/etc/keepalived/script/check_haproxy.sh" # 每隔两秒检测
-interval 2
-# 权重
-weight 2
+    # 检测HAProxy监本
+    script "/etc/keepalived/script/check_haproxy.sh" 
+    # 每隔两秒检测
+    interval 2
+    # 权重
+    weight 2
 }
 # 虚拟组
 vrrp_instance haproxy {
-state MASTER # 此处为`主`，备机是 `BACKUP`
-        interface ens33 # 物理网卡，根据情况而定 mcast_src_ip 192.168.8.40 # 当前主机ip virtual_router_id 51 # 虚拟路由id，同一个组内需要相同 priority 100 # 主机的优先权要比备机高
-advert_int 1 # 心跳检查频率，单位:秒 authentication { # 认证，组内的要相同
+    state MASTER # 此处为`主`，备机是 `BACKUP`
+    interface ens33 # 物理网卡，根据情况而定 
+    mcast_src_ip 192.168.8.40 # 当前主机ip 
+    virtual_router_id 51 # 虚拟路由id，同一个组内需要相同 
+    priority 100 # 主机的优先权要比备机高
+    advert_int 1 # 心跳检查频率，单位:秒 
+    authentication { # 认证，组内的要相同
         auth_type PASS
         auth_pass 1111
     }
-# 调用脚本 track_script {
+    # 调用脚本 track_script {
         check_haproxy
     }
-# 虚拟ip，多个换行 virtual_ipaddress {
-        192.168.8.201
+    # 虚拟ip，多个换行 virtual_ipaddress {
+        192.168.188.201
     }
 }
  ```
@@ -502,20 +541,3 @@ advert_int 1 # 心跳检查频率，单位:秒 authentication { # 认证，组�
 ```
 keepalived -D
 ```
-
-广域网的同步方案   
-federation插件
-shovel插件
-  
-实践经验总结 
-1、配置文件与命名规范
-
-   
-集中放在properties文件中 
-体现元数据类型(_VHOST _EXCHANGE _QUEUE); 
-体现数据来源和去向(XXX_TO_XXX);
-  
-2、调用封装 可以对Template做进一步封装，简化消息的发送。
-3、信息落库+定时任务 将需要发送的消息保存在数据库中，可以实现消息的可追溯和重复控制，需要配合定时任务来实现。
-
-    

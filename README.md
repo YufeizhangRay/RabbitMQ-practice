@@ -436,6 +436,7 @@ RabbitMQ镜像队列
 HAproxy负载+Keepalived高可用  
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84.jpeg)  
   
+其中HAProxy做为负载均衡组件来使应用的访问分发到不同的RabbitMQ节点上面。为了保证负载均衡的高可用，我们可以使用两个HAProxy作为集群，同时使用Keepalived做心跳检测来观察HAProxy的可用情况。若HAProxy不可用，则Keepalived会降低自己的优先级，使另一个Keepalived竞争到VIP(Virtual IP)，保证可用的HAProxy进行负载均衡。
 在两个内存节点上安装HAProxy  
 ```
 yum install haproxy

@@ -1,6 +1,27 @@
 # RabbitMQ-practice  
   
-## RabbitMQ学习实践 原理分析 
+## RabbitMQ学习实践 原理分析  
+  
+- [什么是RabbitMQ](#什么是rabbitmq)  
+- [RabbitMQ的典型应用场景](#rabbitmq典型应用场景)  
+- [AMQP协议](#amqp协议)  
+- [RabbitMQ的特性](#rabbitmq的特性)   
+  - [工作模型](#工作模型)  
+  - [三种主要的交换机](#三种主要的交换机)  
+- [Java API 编程](#java-api-编程)  
+- [RabbitMQ进阶](#rabbitmq进阶)  
+  - [TTL(Time To Live)](#ttltime-to-live)    
+  - [死信队列](#死信队列)  
+  - [优先级队列](#优先级队列)
+  - [延迟队列](#延迟队列)  
+  - [RPC](#rpc)  
+  - [服务端流控(Flow Control)](#服务端流控flow-control)  
+  - [消费端限流](#消费端限流)  
+- [UI管理界面的使用](#ui管理界面的使用)  
+- [Spring配置方式集成RabbitMQ](#spring配置方式集成rabbitmq)  
+- [Spring Boot集成RabbitMQ](#spring-boot集成rabbitmq)  
+- [可靠性投递与生产实践](#可靠性投递与生产实践)
+- [高可用架构](#高可用架构)
   
 ### 什么是RabbitMQ  
   
@@ -42,7 +63,7 @@ RabbitMQ提供了许多插件，以实现从多方面扩展，当然也可以编
    
 ![](https://github.com/YufeizhangRay/image/blob/master/RabbitMQ/%E6%A6%82%E5%BF%B5.jpeg)  
   
-三种主要的交换机  
+#### 三种主要的交换机  
   
 Direct Exchange 直连交换机  
 定义:直连类型的交换机与一个队列绑定时，需要指定一个明确的binding key。  

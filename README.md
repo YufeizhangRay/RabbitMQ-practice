@@ -179,7 +179,8 @@ public class MyConsumer {
             }
     };
     // 开始获取消息
-    // String queue, boolean autoAck, Consumer callback channel.basicConsume(QUEUE_NAME, true, consumer);
+    // String queue, boolean autoAck, Consumer callback 
+    channel.basicConsume(QUEUE_NAME, true, consumer);
   } 
 }
 ```
@@ -565,3 +566,4 @@ vrrp_instance haproxy {
 ```
 keepalived -D
 ```
+[返回顶部](#RabbitMQ-practice)

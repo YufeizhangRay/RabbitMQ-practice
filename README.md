@@ -124,8 +124,8 @@ public class MyProducer {
         factory.setPort(5672);
         // 虚拟机 
         factory.setVirtualHost("/"); 
-        // 用户 f
-        actory.setUsername("guest"); 
+        // 用户 
+        factory.setUsername("guest"); 
         factory.setPassword("guest");
         // 建立连接
         Connection conn = factory.newConnection(); 
